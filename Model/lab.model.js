@@ -3,9 +3,9 @@ const Schema = mongoose.Schema;
 
 
 const labSchema = new Schema({
-    labNo: { type: Number, requared: true },
-    SystemNumber: { type: Number, requared: true },
-    SerialNumber: { type: String, requared: true },
+    labNo: { type: Number, required: true },
+    systemNo: { type: Number, required: true },
+    serialNo: { type: String, required: true },
 },
 {
     timestamps: true,

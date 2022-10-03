@@ -18,8 +18,10 @@ mongoose.connection.once('open', () => {
 })
 
 const auth = require('./Routes/auth')
+const system = require('./Routes/systems')
 
 app.use('/auth', auth)
+app.use('/system', system)
 
 
 app.listen(port, () => {

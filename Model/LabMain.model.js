@@ -3,10 +3,10 @@ const Schema = mongoose.Schema;
 
 
 const labSchema = new Schema({
-    systemConfigs: { type: String, requared: true },
-    admin: { type: String, requared: true },
-    slots: { type: String, requared: true },
-    systems: { type: [String], requared: true },
+    systemConfigs: { type: String, required: true },
+    admin: { type: String, required: true },
+    slots: { type: String, required: true },
+    systems: { type: [String], required: true },
 },
 {
     timestamps: true,
