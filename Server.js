@@ -19,9 +19,13 @@ mongoose.connection.once('open', () => {
 
 const auth = require('./Routes/auth')
 const system = require('./Routes/systems')
+const bookingReq = require('./Routes/requestBooking')
+const bookingConf = require('./Routes/confirmBooking')
 
 app.use('/auth', auth)
 app.use('/system', system)
+app.use('/bookingConf', bookingConf)
+app.use('/bookingReq', bookingReq)
 
 
 app.listen(port, () => {
