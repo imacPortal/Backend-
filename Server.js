@@ -28,6 +28,10 @@ app.use('/bookingConf', bookingConf)
 app.use('/bookingReq', bookingReq)
 
 
+app.get('/',(req,res)=>{
+    res.json("running!")
+})
+
 app.listen(port, () => {
     console.log("server running on port :-" + port);
 });
