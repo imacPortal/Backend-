@@ -30,4 +30,14 @@ router.route('/add').post((req,res)=>{
         .catch(err => res.status(400).json('Error: ' + err));
 })
 
+router.route('/labFetch').post((req,res)=>{
+    const {labNo} = req.body;
+
+    Lab.find({labNo})
+        .then((response)=>{
+            res.json({ status: "fetched", data:response, success: true })
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+})
+
 module.exports = router
