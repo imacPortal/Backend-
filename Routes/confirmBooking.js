@@ -4,8 +4,9 @@
 
 const router = require('express').Router();
 const BookingConf = require('../Model/BookingConfirm.model');
+const BookingReq = require('../Model/BookingRequest.model')
 
-router.route('/add').post(async(req,res)=>{
+router.route('/add/:id').post(async(req,res)=>{
     const { date, slots, lab, system} = req.body;
 
     let findSlot = await BookingConf.findOne({date,slots,lab});
@@ -16,7 +17,11 @@ router.route('/add').post(async(req,res)=>{
         })
         findSlot.save()
             .then(()=>{
-                res.json({ status: "Request granted", success: true })
+                BookingReq.findByIdAndDelete(req.params.id)
+                .then((response)=>{
+                    res.json({ status: "Request granted", success: true })
+                })
+                .catch(err => res.status(400).json('Error: ' + err));
             })
             .catch(err => res.status(400).json('Error: ' + err));
     }else{
@@ -29,7 +34,11 @@ router.route('/add').post(async(req,res)=>{
     
         newReq.save()
             .then(()=>{
-                res.json({ status: "Request granted", success: true })
+                BookingReq.findByIdAndDelete(req.params.id)
+                .then((response)=>{
+                    res.json({ status: "Request granted", success: true })
+                })
+                .catch(err => res.status(400).json('Error: ' + err));
             })
             .catch(err => res.status(400).json('Error: ' + err));
     }
