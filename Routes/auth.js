@@ -1,8 +1,9 @@
 const router = require('express').Router();
 let auth = require('../Model/auth.model');
 let user = require('../Model/User.model');
+let nodemailer = require('nodemailer')
 var bcrypt = require('bcryptjs');
-
+require('dotenv').config();
 
 router.route('/setup').post(async (req,res)=>{
     const {name,registrationnumber,department, phoneNumber, email} = req.body
@@ -51,6 +52,28 @@ router.route('/add').post(async (req,res)=>{
         });
         newAuth.save()
             .then(()=>{
+                var transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                      user: process.env.EMAIL,
+                      pass: process.env.PASSWORD
+                    }
+                  });
+                  
+                  var mailOptions = {
+                    from: process.env.EMAIL,
+                    to: email,
+                    subject: 'Imac Lab Access',
+                    text: `You have been added as an user in the imac lab SRM\nYour Email: ${email}\nYour Password: ${password}`
+                  };
+                  
+                  transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                      console.log(error);
+                    } else {
+                      console.log('Email sent: ' + info.response);
+                    }
+                  });
                 res.json({ status: "user added", success: true })
             })
             .catch(err => res.status(400).json('Error: ' + err));
