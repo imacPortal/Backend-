@@ -4,6 +4,62 @@ let user = require('../Model/User.model');
 var bcrypt = require('bcryptjs');
 
 
+router.route('/setup').post(async (req,res)=>{
+    const {name,registrationnumber,department, phoneNumber, email} = req.body
+
+    const newUser = new user({
+                name,
+                regno:registrationnumber,
+                dept:department,
+                phno:phoneNumber,
+                email,
+                designation:"staff/user",
+            });
+    newUser.save()
+        .then((findUser)=>{
+            const userData = {
+                id:findUser._id,
+                name:findUser.name,
+                regno:findUser.regno,
+                dept:findUser.dept,
+                designation:findUser.designation,
+                email:findUser.email,
+                phno:findUser.phno
+            }
+            res.json({ status: "user added",data:userData, success: true })
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+
+})
+
+
+router.route('/add').post(async (req,res)=>{
+    const {email, password} = req.body
+
+    const existingUser = await auth.findOne({ email: email });
+
+    const salt = await bcrypt.genSaltSync(10);
+    const encryptedPassword = await bcrypt.hashSync(password, salt);
+
+    if(existingUser){
+        res.json('user already exists');
+    }else{
+        const newAuth = new auth({
+            email,
+            password:encryptedPassword,
+            userId:"onboarding"
+        });
+        newAuth.save()
+            .then(()=>{
+                res.json({ status: "user added", success: true })
+            })
+            .catch(err => res.status(400).json('Error: ' + err));
+    }
+
+
+})
+
+
 router.route('/signup').post(async (req,res)=>{
     const { name, regno, dept, designation, email, phno, password } = req.body;
 
@@ -45,21 +101,35 @@ router.route('/signup').post(async (req,res)=>{
 router.route('/getUser/:id').get(async (req,res)=>{
     const id = req.params.id;
 
-    const findUser = await user.findById(id);
-    if(findUser){
-        const userData = {
-            id:findUser._id,
-            name:findUser.name,
-            regno:findUser.regno,
-            dept:findUser.dept,
-            designation:findUser.designation,
-            email:findUser.email,
-            phno:findUser.phno
+    if(id != 'null'){
+        const findUser = await user.findById(id);
+        if(findUser){
+            const userData = {
+                id:findUser._id,
+                name:findUser.name,
+                regno:findUser.regno,
+                dept:findUser.dept,
+                designation:findUser.designation,
+                email:findUser.email,
+                phno:findUser.phno
+            }
+            res.json({ status: "user found", data:userData, success: true });
+        }else{
+            res.json({ status: "user not found", data:null, success: true });
         }
-        res.json({ status: "user found", data:userData, success: true });
     }else{
-        res.json({ status: "user not found", data:null, success: true });
+        const userData = {
+            id:null,
+            name:null,
+            regno:null,
+            dept:null,
+            designation:null,
+            email:null,
+            phno:null
+        }
+        res.json({ status: "onboarding", data:userData, success: true });
     }
+
 })
 
 router.route('/login').post(async (req,res)=>{
@@ -74,18 +144,33 @@ router.route('/login').post(async (req,res)=>{
         }
         else {
             const findUser = await user.findOne({ email: email });
-            const userData = {
-                id:findUser._id,
-                name:findUser.name,
-                regno:findUser.regno,
-                dept:findUser.dept,
-                designation:findUser.designation,
-                email:findUser.email,
-                phno:findUser.phno
+            if(findUser){
+                const userData = {
+                    id:findUser._id,
+                    name:findUser.name,
+                    regno:findUser.regno,
+                    dept:findUser.dept,
+                    designation:findUser.designation,
+                    email:findUser.email,
+                    phno:findUser.phno
+                }
+                res.json({ status: "user found", data:userData, success: true });
+            }else{
+                const userData = {
+                    id:null,
+                    name:null,
+                    regno:null,
+                    dept:null,
+                    designation:null,
+                    email:email,
+                    phno:null
+                }
+                res.json({ status: "onboarding", data:userData, success: true });
             }
-            res.json({ status: "user found", data:userData, success: true });
         }
         // console.log(existingUser);
+    }else{
+        res.json({ status: "User not found", success: true });
     }
 })
 
