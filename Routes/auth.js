@@ -3,6 +3,7 @@ let auth = require('../Model/auth.model');
 let user = require('../Model/User.model');
 let nodemailer = require('nodemailer')
 var bcrypt = require('bcryptjs');
+var randomString = require('randomstring')
 require('dotenv').config();
 
 router.route('/setup').post(async (req,res)=>{
@@ -197,5 +198,94 @@ router.route('/login').post(async (req,res)=>{
     }
 })
 
+router.route('/resetPassword').post(async (req,res)=>{
+    const {email} = req.body;
+
+    const pass = randomString.generate(10)
+    const salt = bcrypt.genSaltSync(10);
+    const encryptedPassword = bcrypt.hashSync(pass, salt);
+
+    const findAuth = await auth.findOne({email})
+
+    if(findAuth){
+        console.log(findAuth._doc)
+        auth.findOneAndUpdate({email},{password:encryptedPassword})
+            .then(()=>{
+                var transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                      user: process.env.EMAIL,
+                      pass: process.env.PASSWORD
+                    }
+                  });
+                  
+                  var mailOptions = {
+                    from: process.env.EMAIL,
+                    to: email,
+                    subject: 'Imac Lab Password Reset',
+                    text: `Your password has been updated\nYour Email: ${email}\nYour Password: ${pass}`
+                  };
+                  
+                  transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                      console.log(error);
+                    } else {
+                      console.log('Email sent: ' + info.response);
+                    }
+                  });
+                res.json({ status: "new password set. Check mail", success: true });
+            }).catch(err=>{
+                res.json({ status: "Something went wrong", success: true });
+            })
+    }else{
+        res.json({ status: "User not found", success: true });
+    }
+})
+
+router.route('/changePassword/:id').post(async (req,res)=>{
+    const { newPassword } = req.body;
+    const email = req.params.id;
+
+    
+    const salt = bcrypt.genSaltSync(10);
+    const encryptedPassword = bcrypt.hashSync(newPassword, salt);
+    // console.log(encryptedPassword)
+
+    const findAuth = await auth.findOne({email})
+
+    if(findAuth){
+        auth.findOneAndUpdate({email},{password:encryptedPassword})
+            .then(()=>{
+                var transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                      user: process.env.EMAIL,
+                      pass: process.env.PASSWORD
+                    }
+                  });
+                  
+                  var mailOptions = {
+                    from: process.env.EMAIL,
+                    to: email,
+                    subject: 'Imac Lab Password Changed',
+                    text: `Your password has been updated\nYour Email: ${email}\nYour Password: ${newPassword}`
+                  };
+                  
+                  transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                      console.log(error);
+                    } else {
+                      console.log('Email sent: ' + info.response);
+                    }
+                  });
+                res.json({ status: "new password set. Check mail", success: true });
+            }).catch(err=>{
+                res.json({ status: err, success: true });
+            })
+    }else{
+        res.json({ status: "User not found", success: true });
+    }
+
+})
 
 module.exports = router;
