@@ -5,6 +5,24 @@
 const router = require('express').Router();
 const BookingConf = require('../Model/BookingConfirm.model');
 const BookingReq = require('../Model/BookingRequest.model')
+const Report = require('../Model/report.model')
+
+router.route('/test/:id').post(async (req,res)=>{
+    const requests = await BookingReq.findById(req.params.id)
+    const report = new Report({
+        name:requests.name,
+        regNo:requests.regNo,
+        date:requests.date,
+        slots:requests.slots,
+        lab:requests.lab,
+        noOfStuds:requests.noOfStuds,
+        subject:requests.subject,
+        reason:requests.reason,
+        system:requests.system,
+    })
+    await report.save()
+    res.json({data:requests})
+})
 
 router.route('/add/:id').post(async(req,res)=>{
     const { date, slots, lab, system} = req.body;
@@ -16,12 +34,28 @@ router.route('/add/:id').post(async(req,res)=>{
             findSlot._doc.system.push(s)
         })
         findSlot.save()
-            .then(()=>{
-                BookingReq.findByIdAndDelete(req.params.id)
-                .then((response)=>{
-                    res.json({ status: "Request granted", success: true })
+            .then(async ()=>{
+                const requests = await BookingReq.findById(req.params.id)
+                const report = new Report({
+                    name:requests.name,
+                    regNo:requests.regNo,
+                    date:requests.date,
+                    slots:requests.slots,
+                    lab:requests.lab,
+                    noOfStuds:requests.noOfStuds,
+                    subject:requests.subject,
+                    reason:requests.reason,
+                    system:requests.system,
                 })
-                .catch(err => res.status(400).json('Error: ' + err));
+                report.save()
+                    .then(()=>{
+                        BookingReq.findByIdAndDelete(req.params.id)
+                        .then((response)=>{
+                            res.json({ status: "Request granted", success: true })
+                        })
+                        .catch(err => res.status(400).json('Error: ' + err));
+                    })
+                    .catch(err => res.status(400).json('Error: ' + err));
             })
             .catch(err => res.status(400).json('Error: ' + err));
     }else{
@@ -33,12 +67,28 @@ router.route('/add/:id').post(async(req,res)=>{
         })
     
         newReq.save()
-            .then(()=>{
-                BookingReq.findByIdAndDelete(req.params.id)
-                .then((response)=>{
-                    res.json({ status: "Request granted", success: true })
+            .then(async ()=>{
+                const requests = await BookingReq.findById(req.params.id)
+                const report = new Report({
+                    name:requests.name,
+                    regNo:requests.regNo,
+                    date:requests.date,
+                    slots:requests.slots,
+                    lab:requests.lab,
+                    noOfStuds:requests.noOfStuds,
+                    subject:requests.subject,
+                    reason:requests.reason,
+                    system:requests.system,
                 })
-                .catch(err => res.status(400).json('Error: ' + err));
+                report.save()
+                    .then(()=>{
+                        BookingReq.findByIdAndDelete(req.params.id)
+                        .then((response)=>{
+                            res.json({ status: "Request granted", success: true })
+                        })
+                        .catch(err => res.status(400).json('Error: ' + err));
+                    })
+                    .catch(err => res.status(400).json('Error: ' + err));
             })
             .catch(err => res.status(400).json('Error: ' + err));
     }

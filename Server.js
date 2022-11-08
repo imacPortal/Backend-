@@ -21,11 +21,13 @@ const auth = require('./Routes/auth')
 const system = require('./Routes/systems')
 const bookingReq = require('./Routes/requestBooking')
 const bookingConf = require('./Routes/confirmBooking')
+const report = require('./Routes/report')
 
 app.use('/auth', auth)
 app.use('/system', system)
 app.use('/bookingConf', bookingConf)
 app.use('/bookingReq', bookingReq)
+app.use('/report', report)
 
 
 app.get('/',(req,res)=>{
