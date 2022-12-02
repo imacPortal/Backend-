@@ -1,10 +1,101 @@
 const router = require('express').Router();
 let auth = require('../Model/auth.model');
 let user = require('../Model/User.model');
+let signupReq = require('../Model/signupRequest.model')
 let nodemailer = require('nodemailer')
 var bcrypt = require('bcryptjs');
 var randomString = require('randomstring')
 require('dotenv').config();
+
+router.route('/deleteSignupReq/:id/:t').get(async (req,res)=>{
+   const id = req.params.id
+
+   signupReq.findByIdAndDelete(id)
+        .then((response)=>{
+            if(req.params.t === "sendInfo"){
+                    var transporter = nodemailer.createTransport({
+                        service: 'gmail',
+                        auth: {
+                            user: process.env.EMAIL,
+                            pass: process.env.PASSWORD
+                        }
+                        });
+                        
+                    var mailOptions = {
+                        from: process.env.EMAIL,
+                        to: response.email,
+                        subject: 'Imac Lab Access Denied',
+                        text: `WE are regret to inform you that your permission to access the imac lab portal was denied.`
+                        };
+                        
+                    transporter.sendMail(mailOptions, function(error, info){
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                        }
+                        });
+            }
+            res.json({ status: "deleted", data:response, success: true })
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+})
+
+router.route('/fetchSignupReq').get(async (req,res)=>{
+    signupReq.find()
+        .then((response)=>{
+            res.json({ status: "fetched", data:response, success: true })
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+})
+
+router.route('/signupReq').post(async (req,res)=>{
+    const {email, password, reason} = req.body
+
+    const existingReq = await signupReq.findOne({email})
+
+    if(existingReq){
+        res.json({ status: "request already sent!", success: false })
+    }else{
+        if(email.split('@')[1] !== 'srmist.edu.in'){
+            res.json({ status: "access is only possibel for people in SRMIST!", success: false })
+        }else{
+            const newReq = new signupReq({
+                email,
+                password,
+                reason
+            });
+            newReq.save()
+            .then(()=>{
+                var transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                      user: process.env.EMAIL,
+                      pass: process.env.PASSWORD
+                    }
+                  });
+                  
+                  var mailOptions = {
+                    from: process.env.EMAIL,
+                    to: process.env.EMAIL,
+                    subject: 'Imac Lab Access',
+                    text: `A person just requested acces into the imac lab portal\nEmail: ${email}\nReason: ${reason}`
+                  };
+                  
+                  transporter.sendMail(mailOptions, function(error, info){
+                    if (error) {
+                      console.log(error);
+                    } else {
+                      console.log('Email sent: ' + info.response);
+                    }
+                  });
+                res.json({ status: "Request successfully passed awaiting confirmation", success: true })
+            })
+            .catch(err => res.status(400).json('Error: ' + err));
+        }
+    }
+})
+
 
 router.route('/setup').post(async (req,res)=>{
     const {name,registrationnumber,department, phoneNumber, email} = req.body
