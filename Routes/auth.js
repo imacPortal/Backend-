@@ -50,7 +50,7 @@ router.route('/fetchSignupReq').get(async (req,res)=>{
 })
 
 router.route('/signupReq').post(async (req,res)=>{
-    const {email, password, reason} = req.body
+    const {email, department, type, reason} = req.body
 
     const existingReq = await signupReq.findOne({email})
 
@@ -62,7 +62,8 @@ router.route('/signupReq').post(async (req,res)=>{
         }else{
             const newReq = new signupReq({
                 email,
-                password,
+                department,
+                type,
                 reason
             });
             newReq.save()
@@ -127,15 +128,17 @@ router.route('/setup').post(async (req,res)=>{
 
 
 router.route('/add').post(async (req,res)=>{
-    const {email, password} = req.body
+    const {email} = req.body
 
     const existingUser = await auth.findOne({ email: email });
+
+    const password = randomString.generate(10)
 
     const salt = await bcrypt.genSaltSync(10);
     const encryptedPassword = await bcrypt.hashSync(password, salt);
 
     if(existingUser){
-        res.json('user already exists');
+        res.json({ status: 'user already exists', success: false })
     }else{
         const newAuth = new auth({
             email,

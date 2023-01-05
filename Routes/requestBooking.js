@@ -37,6 +37,25 @@ router.route('/fetch').get(async(req,res)=>{
 
 })
 
+router.route('/fetchSystems').post(async(req,res)=>{
+    const { date, slots, lab} = req.body;
+
+    let tempSystems = []
+
+    BookingReq.find({date, slots, lab})
+        .then((response)=>{
+            response.forEach(r=>{
+                tempSystems = tempSystems.concat(r.system)
+            })
+            if(tempSystems.length > 0)
+                res.json({ status: "fetched", data:tempSystems, success: true })
+            else
+            res.json({ status: "fetched", data:null, success: true })
+
+        })
+        .catch(err => res.status(400).json('Error: ' + err));
+})
+
 router.route('/delete/:id').get(async (req,res)=>{
     const requests = await BookingReq.findById(req.params.id)
     const report = new Report({
