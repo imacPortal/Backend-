@@ -1,7 +1,9 @@
 # API DOC #
 
+## API PORT FOR DEV USE: 5000 ##
+
 ## User API ##
-## <b>/signup</b> ##
+## <b>/auth/signup</b> ##
 Use to add new user.<br><br>
 <b>Type:-</b> Post<br/>
 
@@ -62,7 +64,7 @@ true
 </tr>
 <tr>
 <th>
-<b>cpassword:</b> 
+<b>designation:</b>
 </th>
 <td>   
  String<br/> 
@@ -73,18 +75,7 @@ true
 </tr>
 <tr>
 <th>
-<b>dob:</b>
-</th>
-<td>   
- String<br/> 
-</td>
-<td>
-true
-</td>
-</tr>
-<tr>
-<th>
-<b>phone:</b>
+<b>phno:</b>
 </th>
 <td>   
 number
@@ -95,10 +86,10 @@ true
 </tr>
 <tr>
 <th>
-<b>gender:</b>
+<b>dept:</b>
 </th>
 <td>   
-number
+string
 </td>
 <td>
 true
@@ -110,8 +101,93 @@ true
 <br/>
 <br/>
 
+## <b>/auth/setup</b> ##
+Use to add more details of new user.<br><br>
+<b>Type:-</b> Post<br/>
 
-## <b>/signin</b> ##
+<table>
+<tr>
+<th>
+PARAMS
+</th>
+<th>
+VALUE
+</th>
+<th>
+REQUIRED
+</th>
+</tr>
+<tr>
+<th>
+<b>name:</b>
+<td>   
+ String<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<tr>
+<th>
+<b>registrationnumber:</b> 
+</th>
+<td>   
+String<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<tr>
+<th>
+<b>email:</b>
+</th>
+<td>   
+ String<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<tr>
+<tr>
+<th>
+<b>phoneNumber:</b>
+</th>
+<td>   
+ number<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<tr>
+<th>
+<b>department:</b>
+</th>
+<td>   
+string
+</td>
+<td>
+true
+</td>
+</tr>
+<table>
+
+<br/>
+<br/>
+<br/>
+
+## <b>/auth/getUser/:id</b> ##
+Use to get user.<br><br>
+<b>Type:-</b> GET<br/>
+
+<br/>
+<br/>
+<br/>
+
+
+## <b>/auth/login</b> ##
 Use to login user.<br><br>
 <b>Type:-</b> Post<br/>
 
@@ -149,6 +225,81 @@ true
 </td>
 </tr>
 <tr>
+<table>
+
+<br/>
+<br/>
+<br/>
+
+
+## <b>/auth/resetPassword</b> ##
+Use to reset Password of user.<br><br>
+<b>Type:-</b> Post<br/>
+
+<table>
+<tr>
+<th>
+PARAMS
+</th>
+<th>
+VALUE
+</th>
+<th>
+REQUIRED
+</th>
+</tr>
+<tr>
+<th>
+<b>email:</b>
+<td>   
+ String<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<table>
+
+<br/>
+<br/>
+<br/>
+
+## <b>/auth/changePassword/:id</b> ##
+Use to change Password user.<br><br>
+<b>Type:-</b> Post<br/>
+
+<table>
+<tr>
+<th>
+PARAMS
+</th>
+<th>
+VALUE
+</th>
+<th>
+REQUIRED
+</th>
+</tr>
+<tr>
+<th>
+<b>newPassword:</b>
+<td>   
+ String<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<tr>
+<th>
+<b>email:</b>
+<td>   
+ String<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
 <table>
 
 <br/>
@@ -284,6 +435,10 @@ true
 <br/>
 <br/>
 
+
+## Booking Request API ##
+<br/>
+
 ## <b>/bookingreq/add</b> ##
 
 Use to fetch lab details using lab No.<br><br>
@@ -315,7 +470,7 @@ true
 <th>
 <b>reqNo:</b>
 <td>   
- number<br/> 
+ String<br/> 
 </td>
 <td>
 true
@@ -325,7 +480,7 @@ true
 <th>
 <b>date</b>
 <td>   
- Date<br/> 
+ String<br/> 
 </td>
 <td>
 true
@@ -335,7 +490,7 @@ true
 <th>
 <b>slotes</b>
 <td>   
- String<br/> 
+ Number<br/> 
 </td>
 <td>
 true
@@ -345,7 +500,7 @@ true
 <th>
 <b>lab</b>
 <td>   
- String<br/> 
+ Number<br/> 
 </td>
 <td>
 true
@@ -355,7 +510,7 @@ true
 <th>
 <b>noOfStuds</b>
 <td>   
- number<br/> 
+ String<br/> 
 </td>
 <td>
 true
@@ -385,10 +540,150 @@ true
 <th>
 <b>System</b>
 <td>   
- number<br/> 
+ [string]<br/> 
 </td>
 <td>
 true
 </td>
 </tr>
 <table>
+
+
+
+
+
+<br/>
+<br/>
+<br/>
+
+
+## <b>/bookingreq/delete/:id</b> ##
+
+Use to delete booking requests using id<br><br>
+<b>Type:-</b> Post<br/>
+
+<table>
+<tr>
+<th>
+PARAMS
+</th>
+<th>
+VALUE
+</th>
+<th>
+REQUIRED
+</th>
+</tr>
+<tr>
+<th>
+<b>name:</b>
+<td>   
+ String<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<tr>
+<th>
+<b>reqNo:</b>
+<td>   
+ String<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<tr>
+<th>
+<b>date</b>
+<td>   
+ String<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<tr>
+<th>
+<b>slotes</b>
+<td>   
+ Number<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<tr>
+<th>
+<b>lab</b>
+<td>   
+ Number<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<tr>
+<th>
+<b>noOfStuds</b>
+<td>   
+ String<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<tr>
+<th>
+<b>subject</b>
+<td>   
+ String<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<tr>
+<th>
+<b>reason</b>
+<td>   
+ String<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<tr>
+<th>
+<b>System</b>
+<td>   
+ [string]<br/> 
+</td>
+<td>
+true
+</td>
+</tr>
+<table>
+
+
+## Report API ##
+<br/>
+
+## <b>/report/fetchAll</b> ##
+
+Use to get all the repotr of booking<br><br>
+<b>Type:-</b> GET<br/>
+
+<br/>
+<br/>
+<br/>
+
+## <b>/report/fetchAll/:regNo</b> ##
+
+Use to get a perticular repotr of booking using regNo.<br><br>
+<b>Type:-</b> GET<br/>
+
+<br/>
+<br/>
+<br/>
