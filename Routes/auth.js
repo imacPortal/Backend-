@@ -159,7 +159,7 @@ router.route('/add').post(async (req,res)=>{
                     from: process.env.EMAIL,
                     to: email,
                     subject: 'Imac Lab Access',
-                    text: `You have been added as an user in the imac lab SRM\nYour Email: ${email}\nYour Password: ${password}`
+                    text: `You have been added as an user in the imac lab SRM\nYour Email: ${email}\nYour Password: ${password}\n\nNote:Change the password from the settings for better security`
                   };
                   
                   transporter.sendMail(mailOptions, function(error, info){

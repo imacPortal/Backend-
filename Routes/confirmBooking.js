@@ -95,6 +95,26 @@ router.route('/add/:id').post(async(req,res)=>{
 
 })
 
+router.route('/cancel/:id').post(async(req,res)=>{
+    Report.findById(req.params.id)
+        .then(async response=>{
+            // res.json({ status: "fetched", data:response, success: true })
+            const slots =  response.slots
+            const date =  response.date
+            const lab =  response.lab
+            let findSlot = await BookingConf.findOne({date,slots,lab})
+            response.system.forEach(sys=>{
+                findSlot.system.remove(sys)
+            })
+            findSlot.save()
+                .then(reply=>{
+                    res.json({ status:"successfully cancelled", success: true })
+                }).catch(err=>{
+                    res.json({ status: "Error occured!", success: true })
+                })
+        })
+})
+
 router.route('/fetch').post(async(req,res)=>{
     const { date, slots, lab} = req.body;
 
