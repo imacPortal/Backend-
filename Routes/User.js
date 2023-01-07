@@ -41,7 +41,7 @@ router.route('/signin').post(async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        if (!password || !aadharno) {
+        if (!password || !email) {
             return res.status(404).json({ message: 'enter all details' })
         }
 
