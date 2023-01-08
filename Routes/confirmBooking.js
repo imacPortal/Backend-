@@ -19,6 +19,7 @@ router.route('/test/:id').post(async (req,res)=>{
         subject:requests.subject,
         reason:requests.reason,
         system:requests.system,
+        status:"confirmed",
     })
     await report.save()
     res.json({data:requests})
@@ -46,6 +47,7 @@ router.route('/add/:id').post(async(req,res)=>{
                     subject:requests.subject,
                     reason:requests.reason,
                     system:requests.system,
+                    status:"confirmed",
                 })
                 report.save()
                     .then(()=>{
@@ -79,6 +81,7 @@ router.route('/add/:id').post(async(req,res)=>{
                     subject:requests.subject,
                     reason:requests.reason,
                     system:requests.system,
+                    status:"confirmed",
                 })
                 report.save()
                     .then(()=>{
@@ -106,6 +109,7 @@ router.route('/cancel/:id').post(async(req,res)=>{
             response.system.forEach(sys=>{
                 findSlot.system.remove(sys)
             })
+            findSlot.status = 'cancelled'
             findSlot.save()
                 .then(reply=>{
                     res.json({ status:"successfully cancelled", success: true })

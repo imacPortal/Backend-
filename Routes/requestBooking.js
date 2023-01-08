@@ -68,6 +68,7 @@ router.route('/delete/:id').get(async (req,res)=>{
         subject:requests.subject,
         reason:requests.reason,
         system:requests.system,
+        status:"rejected",
     })
     report.save()
         .then(()=>{

@@ -12,6 +12,7 @@ const reportSchema = new Schema({
     subject: { type: String, required: true },
     reason: { type: String, required: true },
     system: { type: [String], required: true },
+    status: { type: String, required: true },
 }, {
     timestamps: true,
 });
