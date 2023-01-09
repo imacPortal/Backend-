@@ -101,7 +101,7 @@ router.route('/add/:id').post(async(req,res)=>{
 router.route('/cancel/:id').post(async(req,res)=>{
     let response = await Report.findById(req.params.id)
     // res.json({ status: "fetched", data:response, success: true })
-    console.log(response)
+    // console.log(response)
     const slots =  response.slots
     const date =  response.date
     const lab =  response.lab
@@ -110,7 +110,7 @@ router.route('/cancel/:id').post(async(req,res)=>{
         findSlot.system.remove(sys)
     })
     response.status = "cancelled"
-    console.log(response)
+    // console.log(response)
     findSlot.save()
         .then(reply=>{
             response.save()
