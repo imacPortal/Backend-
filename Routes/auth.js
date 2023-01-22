@@ -7,6 +7,64 @@ var bcrypt = require('bcryptjs');
 var randomString = require('randomstring')
 require('dotenv').config();
 
+//employeeDB
+var STAFF = require('../staffDB/employeeId')
+
+router.route('/priorityLogin/:id').get(async (req,res)=>{
+    const data = STAFF.find((v)=>(v['Faculty ID'] === req.params.id))
+
+    if(data){
+        const email = data['Email ID'];
+
+        const existingUser = await auth.findOne({ email: email });
+
+        const password = randomString.generate(10)
+
+        const salt = await bcrypt.genSaltSync(10);
+        const encryptedPassword = await bcrypt.hashSync(password, salt);
+
+        if(existingUser){
+            res.json({ status: 'user already exists', success: false })
+        }else{
+            const newAuth = new auth({
+                email,
+                password:encryptedPassword,
+                userId:"onboarding"
+            });
+            newAuth.save()
+                .then(()=>{
+                    var transporter = nodemailer.createTransport({
+                        service: 'gmail',
+                        auth: {
+                        user: process.env.EMAIL,
+                        pass: process.env.PASSWORD
+                        }
+                    });
+                    
+                    var mailOptions = {
+                        from: process.env.EMAIL,
+                        to: email,
+                        subject: 'Imac Lab Access',
+                        text: `Hello ${data['Faculty Name']}!\nYou have been added as an user in the imac lab SRM\nYour Email: ${email}\nYour Password: ${password}\n\nNote:Change the password from the settings for better security`
+                    };
+                    
+                    transporter.sendMail(mailOptions, function(error, info){
+                        if (error) {
+                        console.log(error);
+                        } else {
+                        console.log('Email sent: ' + info.response);
+                        }
+                    });
+                    res.json({ status: "user added", success: true })
+                })
+                .catch(err => res.status(400).json('Error: ' + err));
+        }
+
+    }else{
+        res.json({ status: "Faculty Informations Not Found", success: false })
+    }
+})
+
 router.route('/deleteSignupReq/:id/:t').get(async (req,res)=>{
    const id = req.params.id
 
