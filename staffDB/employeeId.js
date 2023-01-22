@@ -1127,11 +1127,18 @@ const STAFF = [
         "Email ID": ""
     },
     {
-        "S.No.": "161",
+        "S.No.": "162",
         "Faculty ID": "123456789",
         "Faculty Name": "Dr.S.Nalini",
         "Position": "Assistant Professor",
         "Email ID": "ss9261+990890@srmist.edu.in"
+    },
+    {
+        "S.No.": "163",
+        "Faculty ID": "12345",
+        "Faculty Name": "Dr.S.Nalini",
+        "Position": "Assistant Professor",
+        "Email ID": "ss9261+99080@srmist.edu.in"
     }
 ];
 
